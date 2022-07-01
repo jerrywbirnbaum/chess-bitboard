@@ -34,7 +34,6 @@ def compute_pseudo_knight(knight_loc, own_side):
     knight_clip_file_ab = knight_loc & CLEAR_FILE["a"] & CLEAR_FILE["b"]
     knight_clip_file_gh = knight_loc & CLEAR_FILE["g"] & CLEAR_FILE["h"]
 
-
     spot_1 = knight_clip_file_ab << 10
     spot_2 = knight_clip_file_ab >> 6
 
