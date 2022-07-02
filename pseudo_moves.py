@@ -1,7 +1,4 @@
-from global_bitboards import CLEAR_FILE, FULL_BOARD
-
-# king_start = int('1000000000000000000000000000000000000000000000',2)
-# white_start = int('0000000000000000000000000000000000000000000000001111111111110111',2)
+from global_bitboards import CLEAR_FILE, FULL_BOARD, MASK_RANK
 
 
 def compute_pseudo_king(king_loc, own_side):
@@ -52,3 +49,31 @@ def compute_pseudo_knight(knight_loc, own_side):
     knight_moves = knight_moves & ~own_side
 
     return knight_moves
+
+
+def compute_pseudo_white_pawn(pawn_loc, all_pieces, black_pieces):
+    pawn_one_step = (pawn_loc << 8) & ~all_pieces
+    pawn_two_step = ((pawn_one_step & MASK_RANK["3"]) << 8) & ~all_pieces
+
+    pawn_moves = pawn_one_step | pawn_two_step
+
+    pawn_left_attack = (pawn_loc & CLEAR_FILE["a"]) << 9
+    pawn_right_attack = (pawn_loc & CLEAR_FILE["h"]) << 7
+    pawn_attacks = (pawn_left_attack | pawn_right_attack) & black_pieces
+
+    pawn_moves_and_attacks = pawn_moves | pawn_attacks
+    return pawn_moves_and_attacks
+
+
+def compute_pseudo_black_pawn(pawn_loc, all_pieces, white_pieces):
+    pawn_one_step = (pawn_loc >> 8) & ~all_pieces
+    pawn_two_step = ((pawn_one_step & MASK_RANK["6"]) >> 8) & ~all_pieces
+
+    pawn_moves = pawn_one_step | pawn_two_step
+
+    pawn_left_attack = (pawn_loc & CLEAR_FILE["a"]) >> 7
+    pawn_right_attack = (pawn_loc & CLEAR_FILE["h"]) >> 9
+    pawn_attacks = (pawn_left_attack | pawn_right_attack) & white_pieces
+
+    pawn_moves_and_attacks = pawn_moves | pawn_attacks
+    return pawn_moves_and_attacks
