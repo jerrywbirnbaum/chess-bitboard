@@ -3,6 +3,7 @@ from generate_rays import all_diagonal_rays, all_straight_rays
 from helpers import print_bitboard, bitscan_forward, bitscan_reverse
 
 DIAGONAL_RAYS = all_diagonal_rays()
+STRAIGHT_RAYS = all_straight_rays()
 
 
 def compute_pseudo_king(king_loc, own_side):
@@ -84,7 +85,7 @@ def compute_pseudo_black_pawn(pawn_loc, all_pieces, white_pieces):
 
 
 def compute_pseudo_bishop(bishop_loc, all_pieces, same_pieces, rays=DIAGONAL_RAYS):
-    bishop_idx = bitscan_forward(bishop_loc)
+    bishop_idx = bitscan_reverse(bishop_loc)
     bishop_moves = 0
     for key, value in rays[bishop_idx].items():
         bishop_ray = value
@@ -98,3 +99,26 @@ def compute_pseudo_bishop(bishop_loc, all_pieces, same_pieces, rays=DIAGONAL_RAY
     bishop_moves &= ~same_pieces
 
     return bishop_moves
+
+
+def compute_pseudo_rook(rook_loc, all_pieces, same_pieces, rays=STRAIGHT_RAYS):
+    rook_idx = bitscan_reverse(rook_loc)
+    rook_moves = 0
+    for key, value in rays[rook_idx].items():
+        rook_ray = value
+        if key in ["N", "W"]:
+            blocker_index = bitscan_forward(rook_ray & all_pieces)
+        else:
+            blocker_index = bitscan_reverse(rook_ray & all_pieces)
+        blocker_ray = rays[blocker_index][key]
+        rook_moves |= rook_ray & ~blocker_ray
+
+    rook_moves &= ~same_pieces
+
+    return rook_moves
+
+
+def compute_pseudo_queen(queen_loc, all_pieces, same_pieces):
+    bishop_moves = compute_pseudo_bishop(queen_loc, all_pieces, same_pieces)
+    rook_moves = compute_pseudo_rook(queen_loc, all_pieces, same_pieces)
+    return bishop_moves | rook_moves

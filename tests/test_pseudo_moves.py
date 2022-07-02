@@ -1,3 +1,4 @@
+from cmath import exp
 import sys
 import os
 
@@ -114,10 +115,51 @@ def test_black_pawn_pseudo_moves(black_pawn_start, all_pieces, black_pieces, exp
             int("0000000000000000000000010000000000000000000000000000000000000000", 2),
             int("0000000000001010000100000010000000000000000000000000000000000000", 2),
         ),
+        (
+            int("1", 2),
+            int("0", 2),
+            int("0", 2),
+            int("1000000001000000001000000001000000001000000001000000001000000000", 2),
+        ),
     ],
 )
 def test_bishop_pseudo_moves(bishop_start, all_pieces, same_pieces, expected):
 
     result = compute_pseudo_bishop(bishop_start, all_pieces, same_pieces)
     breakpoint
+    assert bin(result) == bin(expected)
+
+
+@pytest.mark.parametrize(
+    "rook_start, all_pieces, same_pieces, expected",
+    [
+        (
+            int("1", 2),
+            0,
+            0,
+            int("0000000100000001000000010000000100000001000000010000000111111110", 2),
+        ),
+    ],
+)
+def test_took_pseudo_moves(rook_start, all_pieces, same_pieces, expected):
+
+    result = compute_pseudo_rook(rook_start, all_pieces, same_pieces)
+    breakpoint
+    assert bin(result) == bin(expected)
+
+
+@pytest.mark.parametrize(
+    "queen_start, all_pieces, same_pieces, expected",
+    [
+        (
+            int("1", 2),
+            0,
+            0,
+            int("1000000101000001001000010001000100001001000001010000001111111110", 2),
+        ),
+    ],
+)
+def test_took_pseudo_moves(queen_start, all_pieces, same_pieces, expected):
+
+    result = compute_pseudo_queen(queen_start, all_pieces, same_pieces)
     assert bin(result) == bin(expected)
