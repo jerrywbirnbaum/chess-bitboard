@@ -1,5 +1,6 @@
 from itertools import chain
 from helpers import print_bitboard
+from functools import lru_cache
 
 
 def generate_diagonal_rays(rays, start_row, start_col):
@@ -144,15 +145,19 @@ def generate_straight_rays(rays, start_row, start_col):
     return rays
 
 
-def generate_all_diagonal_rays():
+def all_diagonal_rays():
     rays = {}
     for i in range(8):
         for j in range(8):
             generate_diagonal_rays(rays, i, j)
 
+    return rays
 
-def generate_all_straight_rays():
+
+def all_straight_rays():
     rays = {}
     for i in range(8):
         for j in range(8):
             generate_straight_rays(rays, i, j)
+
+    return rays

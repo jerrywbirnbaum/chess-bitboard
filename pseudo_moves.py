@@ -1,4 +1,8 @@
 from global_bitboards import CLEAR_FILE, FULL_BOARD, MASK_RANK
+from generate_rays import all_diagonal_rays, all_straight_rays
+from helpers import print_bitboard, bitscan_forward, bitscan_reverse
+
+DIAGONAL_RAYS = all_diagonal_rays()
 
 
 def compute_pseudo_king(king_loc, own_side):
@@ -77,3 +81,20 @@ def compute_pseudo_black_pawn(pawn_loc, all_pieces, white_pieces):
 
     pawn_moves_and_attacks = pawn_moves | pawn_attacks
     return pawn_moves_and_attacks
+
+
+def compute_pseudo_bishop(bishop_loc, all_pieces, same_pieces, rays=DIAGONAL_RAYS):
+    bishop_idx = bitscan_forward(bishop_loc)
+    bishop_moves = 0
+    for key, value in rays[bishop_idx].items():
+        bishop_ray = value
+        if key in ["NE", "NW"]:
+            blocker_index = bitscan_forward(bishop_ray & all_pieces)
+        else:
+            blocker_index = bitscan_reverse(bishop_ray & all_pieces)
+        blocker_ray = rays[blocker_index][key]
+        bishop_moves |= bishop_ray & ~blocker_ray
+
+    bishop_moves &= ~same_pieces
+
+    return bishop_moves
