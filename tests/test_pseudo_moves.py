@@ -7,7 +7,7 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 
-from pseudo_moves import *
+from move_generation.pseudo_moves import *
 import pytest
 
 
@@ -141,7 +141,7 @@ def test_bishop_pseudo_moves(bishop_start, all_pieces, same_pieces, expected):
         ),
     ],
 )
-def test_took_pseudo_moves(rook_start, all_pieces, same_pieces, expected):
+def test_rook_pseudo_moves(rook_start, all_pieces, same_pieces, expected):
 
     result = compute_pseudo_rook(rook_start, all_pieces, same_pieces)
     breakpoint
@@ -159,7 +159,7 @@ def test_took_pseudo_moves(rook_start, all_pieces, same_pieces, expected):
         ),
     ],
 )
-def test_took_pseudo_moves(queen_start, all_pieces, same_pieces, expected):
+def test_queen_pseudo_moves(queen_start, all_pieces, same_pieces, expected):
 
     result = compute_pseudo_queen(queen_start, all_pieces, same_pieces)
     assert bin(result) == bin(expected)
